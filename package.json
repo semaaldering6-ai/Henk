@@ -1,0 +1,12 @@
+{
+  "name": "design-thinking-app",
+  "version": "1.0.0",
+  "description": "Een interactieve Design Thinking app gebouwd met Cloudflare Pages en HTML",
+  "scripts": {
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

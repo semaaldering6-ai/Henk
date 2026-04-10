@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Thinking – De 5 Stappen</title>
+  <style>
+    :root {
+      --step1: #FF6B6B;
+      --step2: #FF9F43;
+      --step3: #FECA57;
+      --step4: #48DBFB;
+      --step5: #1DD1A1;
+      --dark: #1a1a2e;
+      --darker: #0f0f1a;
+      --text: #e0e0e0;
+      --card-bg: rgba(255,255,255,0.05);
+      --radius: 16px;
+      --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: 80px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 120%, rgba(72,219,251,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(72,219,251,0.15);
+      border: 1px solid rgba(72,219,251,0.4);
+      color: #48DBFB;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 30%, #48DBFB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    header p {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .header-tags {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .header-tags span {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+    }
+
+    /* ── INTRO SECTION ── */
+    .intro {
+      max-width: 860px;
+      margin: 60px auto;
+      padding: 0 24px;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 600px) { .intro { grid-template-columns: 1fr; } }
+
+    .intro-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .intro-card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #48DBFB;
+      margin-bottom: 10px;
+    }
+
+    .intro-card p { font-size: 0.95rem; color: rgba(255,255,255,0.7); }
+
+    /* ── PROGRESS TRACKER ── */
+    .tracker-section {
+      max-width: 860px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+
+    .tracker-section h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .tracker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 0;
+    }
+
+    .tracker-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      flex: 1;
+    }
+
+    .tracker-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      z-index: 0;
+      transition: background var(--transition);
+    }
+
+    .tracker-item.active:not(:last-child)::after,
+    .tracker-item.done:not(:last-child)::after {
+      background: rgba(255,255,255,0.35);
+    }
+
+    .tracker-dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 1;
+      transition: all var(--transition);
+      background: var(--darker);
+    }
+
+    .tracker-item.active .tracker-dot,
+    .tracker-item.done .tracker-dot {
+      border-color: var(--accent);
+      transform: scale(1.15);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .tracker-label {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.4);
+      transition: color var(--transition);
+    }
+
+    .tracker-item.active .tracker-label,
+    .tracker-item.done .tracker-label {
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* ── STEPS SECTION ── */
+    .steps-section {
+      max-width: 860px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+
+    .step-card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px 28px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .step-num {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .step-meta { flex: 1; }
+
+    .step-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.75;
+      margin-bottom: 2px;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-chevron {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.4);
+      transition: transform var(--transition);
+    }
+
+    .step-card.open .step-chevron { transform: rotate(180deg); }
+
+    .step-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .step-card.open .step-body { max-height: 600px; }
+
+    .step-inner {
+      padding: 0 28px 28px 100px;
+    }
+
+    @media (max-width: 500px) { .step-inner { padding: 0 20px 24px 20px; } }
+
+    .step-inner p {
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 16px;
+      font-size: 0.97rem;
+    }
+
+    .step-highlight {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.85);
+      font-style: italic;
+    }
+
+    .step-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .chip {
+      padding: 5px 13px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── NON-LINEAR NOTE ── */
+    .nonlinear {
+      max-width: 860px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+
+    .nonlinear-card {
+      background: linear-gradient(135deg, rgba(72,219,251,0.08), rgba(29,209,161,0.08));
+      border: 1px solid rgba(72,219,251,0.2);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .nonlinear-icon { font-size: 2rem; flex-shrink: 0; }
+
+    .nonlinear-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #48DBFB;
+      margin-bottom: 6px;
+    }
+
+    .nonlinear-card p {
+      font-size: 0.93rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow-section {
+      max-width: 860px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .flow-section h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .flow-node {
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .flow-back {
+      width: 100%;
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    footer a {
+      color: rgba(72,219,251,0.7);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: #48DBFB; }
+
+    /* ── UTIL ── */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="badge">Methode &amp; Innovatie</div>
+  <h1>Design Thinking</h1>
+  <p>Een mensgerichte aanpak om complexe problemen op te lossen en innovatie te stimuleren – in 5 iteratieve stappen.</p>
+  <div class="header-tags">
+    <span>🎯 Gebruikersgericht</span>
+    <span>🔄 Iteratief</span>
+    <span>💡 Creatief</span>
+    <span>🤝 Collaboratief</span>
+  </div>
+</header>
+
+<!-- INTRO CARDS -->
+<section class="intro" aria-label="Wat is Design Thinking">
+  <div class="intro-card">
+    <h2>Wat is Design Thinking?</h2>
+    <p>Design Thinking is een methode om vanuit de behoefte van de eindgebruiker te innoveren. Niet technologie of budget staat centraal, maar de <strong>mens</strong>.</p>
+  </div>
+  <div class="intro-card">
+    <h2>Het kernidee</h2>
+    <p>Het doel is het transformeren van een bestaande situatie naar een <strong>betere, gewenste toekomst</strong> – gebaseerd op de 5 stappen van Herbert Simon.</p>
+  </div>
+</section>
+
+<!-- NON-LINEAR NOTE -->
+<section class="nonlinear" aria-label="Niet-lineair proces">
+  <div class="nonlinear-card">
+    <div class="nonlinear-icon">🔄</div>
+    <div>
+      <h3>Het proces is niet-lineair</h3>
+      <p>Je gaat niet simpelweg van stap 1 naar 5. Als je nieuwe inzichten krijgt – bijvoorbeeld tijdens het testen – ga je terug naar een eerdere fase. Dit iteratieve karakter is juist de kracht van Design Thinking.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS TRACKER -->
+<section class="tracker-section" aria-label="Stap voor stap overzicht">
+  <h2>De 5 Stappen</h2>
+  <nav class="tracker" role="tablist" aria-label="Design Thinking stappen">
+    <div class="tracker-item" role="tab" data-step="0" tabindex="0" aria-selected="false" style="--accent:#FF6B6B; --accent-glow:rgba(255,107,107,0.5)">
+      <div class="tracker-dot">🤝</div>
+      <span class="tracker-label">Inleven</span>
+    </div>
+    <div class="tracker-item" role="tab" data-step="1" tabindex="0" aria-selected="false" style="--accent:#FF9F43; --accent-glow:rgba(255,159,67,0.5)">
+      <div class="tracker-dot">🎯</div>
+      <span class="tracker-label">Definiëren</span>
+    </div>
+    <div class="tracker-item" role="tab" data-step="2" tabindex="0" aria-selected="false" style="--accent:#FECA57; --accent-glow:rgba(254,202,87,0.5)">
+      <div class="tracker-dot">💡</div>
+      <span class="tracker-label">Ideeën</span>
+    </div>
+    <div class="tracker-item" role="tab" data-step="3" tabindex="0" aria-selected="false" style="--accent:#48DBFB; --accent-glow:rgba(72,219,251,0.5)">
+      <div class="tracker-dot">🔧</div>
+      <span class="tracker-label">Prototype</span>
+    </div>
+    <div class="tracker-item" role="tab" data-step="4" tabindex="0" aria-selected="false" style="--accent:#1DD1A1; --accent-glow:rgba(29,209,161,0.5)">
+      <div class="tracker-dot">✅</div>
+      <span class="tracker-label">Testen</span>
+    </div>
+  </nav>
+</section>
+
+<!-- STEP CARDS -->
+<section class="steps-section" aria-label="Uitleg per stap">
+
+  <article class="step-card" data-index="0">
+    <div class="step-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-0">
+      <div class="step-num" style="background: linear-gradient(135deg, #FF6B6B, #ee5a24)">1</div>
+      <div class="step-meta">
+        <div class="step-tag" style="color:#FF6B6B">Stap 1 — De belangrijkste fase</div>
+        <div class="step-title">Empathize · Inleven</div>
+      </div>
+      <span class="step-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="step-body" id="body-0" role="region">
+      <div class="step-inner" style="--accent-color:#FF6B6B">
+        <p>In deze fase zet je je eigen aannames volledig opzij. Je probeert de wereld te zien door de ogen van de eindgebruiker: wat motiveert hen, wat maakt hun dag frustrerend, en wat hebben ze écht nodig?</p>
+        <div class="step-highlight">🎯 Doel: Ontdekken wat gebruikers motiveert en waar zij tegenaan lopen.</div>
+        <div class="step-chips">
+          <span class="chip">🎤 Interviews</span>
+          <span class="chip">👁️ Observaties</span>
+          <span class="chip">📋 Enquêtes</span>
+          <span class="chip">🗺️ Empathy Map</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="step-card" data-index="1">
+    <div class="step-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-1">
+      <div class="step-num" style="background: linear-gradient(135deg, #FF9F43, #e17055)">2</div>
+      <div class="step-meta">
+        <div class="step-tag" style="color:#FF9F43">Stap 2</div>
+        <div class="step-title">Define · Definiëren</div>
+      </div>
+      <span class="step-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="step-body" id="body-1" role="region">
+      <div class="step-inner" style="--accent-color:#FF9F43">
+        <p>Met de inzichten uit de eerste fase ga je het werkelijke probleem nauwkeurig omschrijven. Je formuleert het probleem <strong>vanuit de gebruiker</strong>, niet vanuit het bedrijf.</p>
+        <div class="step-highlight">💬 "De gebruiker heeft behoefte aan een klein apparaat dat snel één kopje sterke espresso kan zetten."</div>
+        <div class="step-chips">
+          <span class="chip">📝 Point of View</span>
+          <span class="chip">🔍 Hoe Kunnen We...?</span>
+          <span class="chip">🧩 Probleemstelling</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="step-card" data-index="2">
+    <div class="step-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-2">
+      <div class="step-num" style="background: linear-gradient(135deg, #FECA57, #f9ca24)">3</div>
+      <div class="step-meta">
+        <div class="step-tag" style="color:#FECA57">Stap 3</div>
+        <div class="step-title">Ideate · Ideeën genereren</div>
+      </div>
+      <span class="step-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="step-body" id="body-2" role="region">
+      <div class="step-inner" style="--accent-color:#FECA57">
+        <p>Nu je weet wat het probleem is, ga je <strong>brainstormen</strong>. In deze fase is kwantiteit belangrijker dan kwaliteit – elk idee is welkom, hoe gek ook. Oordelen is verboden, want dat remt de creativiteit.</p>
+        <div class="step-highlight">🎯 Doel: Het probleem vanuit zoveel mogelijk verschillende invalshoeken bekijken.</div>
+        <div class="step-chips">
+          <span class="chip">🧠 Brainstormen</span>
+          <span class="chip">🗒️ Mind Mapping</span>
+          <span class="chip">🃏 SCAMPER</span>
+          <span class="chip">⚡ Crazy 8's</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="step-card" data-index="3">
+    <div class="step-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-3">
+      <div class="step-num" style="background: linear-gradient(135deg, #48DBFB, #0abde3)">4</div>
+      <div class="step-meta">
+        <div class="step-tag" style="color:#48DBFB">Stap 4</div>
+        <div class="step-title">Prototype · Ontwerpen</div>
+      </div>
+      <span class="step-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="step-body" id="body-3" role="region">
+      <div class="step-inner" style="--accent-color:#48DBFB">
+        <p>De meest veelbelovende ideeën worden omgezet in <strong>tastbare, goedkope versies</strong>. Het doel is niet perfectie, maar snel iets concreets bouwen om te kunnen testen.</p>
+        <div class="step-highlight">🎯 Doel: Onderzoeken of de voorgestelde oplossingen in de praktijk werken.</div>
+        <div class="step-chips">
+          <span class="chip">📄 Paper Prototype</span>
+          <span class="chip">🏺 Kleimodel</span>
+          <span class="chip">💻 Digitale Mockup</span>
+          <span class="chip">🎭 Role Play</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="step-card" data-index="4">
+    <div class="step-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-4">
+      <div class="step-num" style="background: linear-gradient(135deg, #1DD1A1, #10ac84)">5</div>
+      <div class="step-meta">
+        <div class="step-tag" style="color:#1DD1A1">Stap 5</div>
+        <div class="step-title">Test · Testen</div>
+      </div>
+      <span class="step-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="step-body" id="body-4" role="region">
+      <div class="step-inner" style="--accent-color:#1DD1A1">
+        <p>De prototypes worden getest door de <strong>echte gebruikers</strong>. Je observeert hoe zij reageren, wat zij voelen en hoe ze het product gebruiken. De feedback gebruik je om te verbeteren.</p>
+        <div class="step-highlight">🔄 Resultaat: Testresultaten leiden vaak terug naar 'Ideate' of 'Define' om de oplossing verder aan te scherpen.</div>
+        <div class="step-chips">
+          <span class="chip">🧪 Gebruikerstest</span>
+          <span class="chip">📊 Feedback verwerken</span>
+          <span class="chip">🔁 Itereren</span>
+          <span class="chip">📈 Valideren</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- FLOW DIAGRAM -->
+<section class="flow-section" aria-label="Procesflow">
+  <h2>Het iteratieve proces</h2>
+  <div class="flow" aria-hidden="true">
+    <div class="flow-node" style="background:linear-gradient(135deg,#FF6B6B,#ee5a24)">🤝 Inleven</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" style="background:linear-gradient(135deg,#FF9F43,#e17055)">🎯 Definiëren</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" style="background:linear-gradient(135deg,#FECA57,#f9ca24); color:#1a1a2e">💡 Ideeën</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" style="background:linear-gradient(135deg,#48DBFB,#0abde3); color:#1a1a2e">🔧 Prototype</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" style="background:linear-gradient(135deg,#1DD1A1,#10ac84)">✅ Testen</div>
+  </div>
+  <p class="flow-back">↩ Na het testen keer je vaak terug naar Ideeën of Definiëren voor verdere verfijning</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Gebaseerd op de 5 stappen van <strong>Herbert Simon</strong> &nbsp;·&nbsp; Gebouwd met <a href="https://pages.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare Pages</a> &amp; HTML</p>
+</footer>
+
+<script>
+  // ── Accordion toggle ──
+  const cards = document.querySelectorAll('.step-card');
+
+  cards.forEach(card => {
+    const header = card.querySelector('.step-header');
+
+    const toggle = () => {
+      const isOpen = card.classList.contains('open');
+      // close all
+      cards.forEach(c => {
+        c.classList.remove('open');
+        c.querySelector('.step-header').setAttribute('aria-expanded', 'false');
+      });
+      // open clicked (unless it was already open)
+      if (!isOpen) {
+        card.classList.add('open');
+        header.setAttribute('aria-expanded', 'true');
+        updateTracker(parseInt(card.dataset.index));
+      } else {
+        updateTracker(-1);
+      }
+    };
+
+    header.addEventListener('click', toggle);
+    header.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+
+  // ── Tracker update ──
+  const trackerItems = document.querySelectorAll('.tracker-item');
+
+  function updateTracker(activeIndex) {
+    trackerItems.forEach((item, i) => {
+      item.classList.remove('active', 'done');
+      item.setAttribute('aria-selected', 'false');
+      if (i < activeIndex) item.classList.add('done');
+      else if (i === activeIndex) { item.classList.add('active'); item.setAttribute('aria-selected', 'true'); }
+    });
+  }
+
+  // Tracker click → scroll + open matching card
+  trackerItems.forEach((item, i) => {
+    const activate = () => {
+      const card = cards[i];
+      const isOpen = card.classList.contains('open');
+      cards.forEach(c => {
+        c.classList.remove('open');
+        c.querySelector('.step-header').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        card.classList.add('open');
+        card.querySelector('.step-header').setAttribute('aria-expanded', 'true');
+        updateTracker(i);
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        updateTracker(-1);
+      }
+    };
+    item.addEventListener('click', activate);
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+    });
+  });
+</script>
+
+</body>
+</html>
